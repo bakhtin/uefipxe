@@ -1,0 +1,45 @@
+[workspace]
+members = ["bootloader"]
+resolver = "2"
+
+# Patch uefi-raw to use git version everywhere
+[patch.crates-io]
+uefi-raw = { git = "https://github.com/rust-osdev/uefi-rs", tag = "uefi-v0.36.1" }
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[profile.dev]
+panic = "abort"
+lto = false
+
+[profile.release]
+panic = "abort"
+lto = true
+opt-level = "z"  # Optimize for size
+codegen-units = 1
+strip = true
+
+[workspace.dependencies]
+# UEFI core
+uefi = { git = "https://github.com/rust-osdev/uefi-rs", tag = "uefi-v0.36.1", features = ["alloc", "global_allocator", "logger", "panic_handler"] }
+uefi-raw = { git = "https://github.com/rust-osdev/uefi-rs", tag = "uefi-v0.36.1" }
+
+# Network stack
+smoltcp = { version = "0.10", default-features = false, features = ["proto-ipv4", "proto-dhcpv4", "socket-tcp", "socket-dns", "socket-dhcpv4", "medium-ethernet"] }
+embedded-tls = { version = "0.18", default-features = false }
+
+# Utilities
+log = { version = "0.4", default-features = false, features = ["max_level_error"] }
+heapless = "0.8"
+arrayvec = "0.7"
+sha2 = { version = "0.10", default-features = false }
+
+# Parsing and formatting
+nom = { version = "7", default-features = false }
+ufmt = "0.2"
+
+# JSON parsing
+serde-json-core = "0.6"

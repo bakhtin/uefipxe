@@ -1,0 +1,5 @@
+*.img
+*.efi
+*.fd
+.claude
+target
